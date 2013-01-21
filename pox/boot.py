@@ -48,6 +48,7 @@ from __future__ import print_function
 import logging
 import logging.config
 import os
+import random
 import sys
 import traceback
 import time
@@ -315,6 +316,7 @@ Notable POX options include:
   --no-openflow   Don't automatically load the OpenFlow module
   --log-config=F  Load a Python log configuration file (if you include the
                   option without specifying F, it defaults to logging.cfg)
+  --random-seed=X initialize pox random number generator with a given seed [none]
 
 C1, C2, etc. are component names (e.g., Python modules).  Options they
 support are up to the module.  As an example, you can load a learning
@@ -330,6 +332,7 @@ class POXOptions (Options):
     self.verbose = False
     self.enable_openflow = True
     self.log_config = None
+    self.random_seed = None
 
   def _set_h (self, given_name, name, value):
     self._set_help(given_name, name, value)
@@ -348,6 +351,10 @@ class POXOptions (Options):
 
 #  def _set_no_cli (self, given_name, name, value):
 #    self.cli = not str_to_bool(value)
+  def _set_random_seed (self, given_name, name, value):
+    if value is not None:
+        random.seed(int(value))
+    self.random_seed = value
 
   def _set_log_config (self, given_name, name, value):
     if value is True:
